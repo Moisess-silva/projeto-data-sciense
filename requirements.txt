@@ -1,0 +1,8 @@
+numpy
+pandas
+scikit-learn==1.4.2
+matplotlib
+seaborn
+tpot==0.12.2
+setuptools<81
+

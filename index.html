@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Projeto acadêmico de Visualização e Apresentação Executiva em Data Science.">
+  <title>Analytics Lab | Visualização Executiva</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b1220'/%3E%3Cpath d='M16 44V30h8v14h-8Zm12 0V20h8v24h-8Zm12 0V12h8v32h-8Z' fill='%232dd4bf'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#e8eef7; --muted:#9eacc2; --bg:#08111f; --panel:#101d30; --line:#23344d; --teal:#2dd4bf; --blue:#60a5fa; --orange:#fb923c; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.65 'DM Sans',sans-serif; }
+    h1,h2,h3 { font-family:'Space Grotesk',sans-serif; line-height:1.15; margin:0; }
+    h1 { font-size:clamp(2.4rem,6vw,5.6rem); letter-spacing:-.06em; max-width:850px; }
+    h2 { font-size:clamp(1.9rem,3vw,3rem); letter-spacing:-.035em; }
+    h3 { font-size:1.25rem; }
+    p { margin:0 0 1rem; }
+    a { color:inherit; text-decoration:none; }
+    .nav { position:sticky; top:0; z-index:10; background:rgba(8,17,31,.9); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+    .nav-inner { max-width:1180px; margin:auto; display:flex; align-items:center; justify-content:space-between; min-height:68px; padding:0 24px; gap:20px; }
+    .brand { font-family:'Space Grotesk'; font-weight:700; letter-spacing:-.02em; white-space:nowrap; }
+    .brand span { color:var(--teal); }
+    .links { display:flex; gap:8px; overflow:auto; }
+    .links a { color:var(--muted); padding:8px 12px; border-radius:8px; white-space:nowrap; font-size:.92rem; }
+    .links a:hover { color:var(--ink); background:#17283e; }
+    .wrap { max-width:1180px; margin:auto; padding:0 24px; }
+    .hero { padding:110px 0 80px; border-bottom:1px solid var(--line); background:radial-gradient(circle at 85% 25%,rgba(45,212,191,.12),transparent 28%),radial-gradient(circle at 10% 0%,rgba(96,165,250,.12),transparent 30%); }
+    .eyebrow { color:var(--teal); text-transform:uppercase; letter-spacing:.16em; font-size:.76rem; font-weight:700; margin-bottom:18px; }
+    .hero p { max-width:700px; color:var(--muted); font-size:1.15rem; margin-top:24px; }
+    .hero-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:50px; align-items:end; }
+    .hero-stat { border-left:2px solid var(--teal); padding-left:22px; color:var(--muted); }
+    .hero-stat strong { display:block; color:var(--ink); font:700 2.4rem 'Space Grotesk'; }
+    .section { padding:88px 0; border-bottom:1px solid var(--line); }
+    .section-head { display:flex; justify-content:space-between; gap:30px; align-items:end; margin-bottom:34px; }
+    .section-head p { color:var(--muted); max-width:520px; margin:0; }
+    .kicker { color:var(--orange); font-weight:700; font-size:.9rem; margin-bottom:10px; }
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; }
+    .card h3 { margin-bottom:10px; }
+    .card p,.muted { color:var(--muted); }
+    .metric { color:var(--teal); font:700 2rem 'Space Grotesk'; display:block; margin-bottom:4px; }
+    .visual-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+    figure { margin:0; background:#fff; border-radius:14px; overflow:hidden; border:1px solid #d5deea; }
+    figure img { display:block; width:100%; height:auto; }
+    figure .chart { display:block; width:100%; height:auto; padding:10px; margin:0 auto; }
+    .visual-grid figure { margin-bottom:0; }
+    .visual-grid figcaption { margin-bottom:0; }
+    figcaption { color:#26364d; padding:12px 16px; font-weight:600; font-size:.92rem; }
+    .full { grid-column:1/-1; max-width:800px; }
+    .table-wrap { overflow:auto; background:var(--panel); border:1px solid var(--line); border-radius:14px; }
+    table { width:100%; border-collapse:collapse; min-width:620px; }
+    th,td { text-align:left; padding:14px 16px; border-bottom:1px solid var(--line); }
+    th { color:var(--teal); font-size:.86rem; text-transform:uppercase; letter-spacing:.06em; }
+    td { color:var(--muted); }
+    tr:last-child td { border-bottom:0; }
+    tr.highlight td { color:var(--ink); font-weight:700; background:rgba(45,212,191,.08); }
+    .callout { margin-top:28px; padding:24px 26px; border:1px solid rgba(45,212,191,.35); border-left:4px solid var(--teal); background:rgba(45,212,191,.07); border-radius:12px; }
+    .callout strong { color:var(--teal); }
+    .explain { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:28px; }
+    .number { color:var(--orange); font:700 1.4rem 'Space Grotesk'; margin-bottom:10px; }
+    footer { padding:35px 0; color:var(--muted); font-size:.9rem; }
+    @media (max-width:800px) { .hero-grid,.cards,.visual-grid,.explain { grid-template-columns:1fr; } .hero { padding:75px 0 60px; } .section { padding:60px 0; } .section-head { display:block; } .section-head p { margin-top:14px; } .nav-inner { align-items:flex-start; flex-direction:column; padding-top:14px; padding-bottom:12px; } }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Navegação principal">
+    <div class="nav-inner">
+      <a class="brand" href="#inicio">Analytics<span>Lab</span></a>
+      <div class="links"><a href="#q1">Questão 1</a><a href="#q2">Questão 2</a><a href="#q3">Questão 3</a></div>
+    </div>
+  </nav>
+
+  <header class="hero" id="inicio">
+    <div class="wrap hero-grid">
+      <div><div class="eyebrow">Projeto acadêmico · Data Science</div><h1>Dados complexos, decisões mais claras.</h1><p>Uma apresentação visual sobre redução de dimensionalidade, ensembles e AutoML — traduzindo experimentos de Machine Learning em evidências executivas.</p></div>
+      <div class="hero-stat"><strong>3</strong>questões analisadas<br><strong>8</strong>visualizações geradas<br><strong>100%</strong>foco em interpretação</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="q1"><div class="wrap">
+      <div class="section-head"><div><div class="kicker">Questão 01 · Classificação</div><h2>Vinhos: PCA versus LDA</h2></div><p>O objetivo foi reduzir 13 características químicas para duas dimensões e comparar o desempenho do KNN.</p></div>
+      <div class="cards"><div class="card"><span class="metric">94,4%</span><h3>LDA + KNN</h3><p>Maior acurácia no conjunto de teste.</p></div><div class="card"><span class="metric">91,7%</span><h3>PCA + KNN</h3><p>Boa representação da variação geral dos dados.</p></div><div class="card"><h3>Insight executivo</h3><p>Como o LDA conhece os rótulos das classes, ele orienta a projeção para separar melhor os tipos de vinho.</p></div></div>
+      <div class="visual-grid" style="margin-top:28px"><figure><svg class="chart" viewBox="0 0 520 330" role="img" aria-label="PCA: classes parcialmente sobrepostas"><rect width="520" height="330" fill="white"/><path d="M55 25V255H495M55 210H495M55 165H495M55 120H495M55 75H495" stroke="#dbe3ee"/><g fill="#e15759"><circle cx="115" cy="180" r="7"/><circle cx="155" cy="140" r="7"/><circle cx="190" cy="205" r="7"/><circle cx="220" cy="165" r="7"/></g><g fill="#59a14f"><rect x="258" y="113" width="14" height="14"/><rect x="298" y="143" width="14" height="14"/><rect x="343" y="88" width="14" height="14"/><rect x="373" y="128" width="14" height="14"/></g><g stroke="#4c78a8" stroke-width="3"><path d="M324 199l12 12m-12 0l12-12M379 179l12 12m-12 0l12-12M424 214l12 12m-12 0l12-12M449 164l12 12m-12 0l12-12"/></g><text x="260" y="285" text-anchor="middle" fill="#26364d">Componente Principal 1</text><text transform="translate(16 150) rotate(-90)" text-anchor="middle" fill="#26364d">Componente Principal 2</text><g font-size="13" fill="#26364d"><circle cx="78" cy="306" r="6" fill="#e15759"/><text x="90" y="310">Classe 0</text><rect x="175" y="300" width="12" height="12" fill="#59a14f"/><text x="195" y="310">Classe 1</text><path d="M285 300l12 12m-12 0l12-12" stroke="#4c78a8" stroke-width="3"/><text x="307" y="310">Classe 2</text></g></svg><figcaption>PCA · variação geral dos dados</figcaption></figure><figure><svg class="chart" viewBox="0 0 520 330" role="img" aria-label="LDA: classes separadas"><rect width="520" height="330" fill="white"/><path d="M55 25V255H495M55 210H495M55 165H495M55 120H495M55 75H495" stroke="#dbe3ee"/><g fill="#e15759"><circle cx="115" cy="190" r="7"/><circle cx="145" cy="210" r="7"/><circle cx="175" cy="180" r="7"/></g><g fill="#59a14f"><rect x="263" y="73" width="14" height="14"/><rect x="293" y="98" width="14" height="14"/><rect x="323" y="63" width="14" height="14"/></g><g stroke="#4c78a8" stroke-width="3"><path d="M399 184l12 12m-12 0l12-12M434 209l12 12m-12 0l12-12M459 169l12 12m-12 0l12-12"/></g><text x="260" y="285" text-anchor="middle" fill="#26364d">Componente LDA 1</text><text transform="translate(16 150) rotate(-90)" text-anchor="middle" fill="#26364d">Componente LDA 2</text><g font-size="13" fill="#26364d"><circle cx="78" cy="306" r="6" fill="#e15759"/><text x="90" y="310">Classe 0</text><rect x="175" y="300" width="12" height="12" fill="#59a14f"/><text x="195" y="310">Classe 1</text><path d="M285 300l12 12m-12 0l12-12" stroke="#4c78a8" stroke-width="3"/><text x="307" y="310">Classe 2</text></g></svg><figcaption>LDA · separação orientada pelas classes</figcaption></figure><figure class="full"><svg class="chart" viewBox="0 0 760 300" role="img" aria-label="PCA 91,7 por cento e LDA 94,4 por cento"><rect width="760" height="300" fill="white"/><path d="M90 25V245H700M90 190H700M90 135H700M90 80H700" stroke="#dbe3ee"/><rect x="240" y="51" width="100" height="194" fill="#4c78a8"/><rect x="430" y="45" width="100" height="200" fill="#f58518"/><text x="290" y="38" text-anchor="middle" fill="#26364d" font-weight="bold">91,7%</text><text x="480" y="32" text-anchor="middle" fill="#26364d" font-weight="bold">94,4%</text><text x="290" y="270" text-anchor="middle" fill="#26364d">PCA</text><text x="480" y="270" text-anchor="middle" fill="#26364d">LDA</text></svg></figure></div>
+      <div class="callout"><strong>Resposta:</strong> o LDA proporcionou a melhor acurácia. Ele é mais adequado quando a prioridade é classificação supervisionada; o PCA pode ser superior em exploração, redução de ruído ou quando os rótulos são ausentes ou pouco confiáveis.</div>
+    </div></section>
+
+    <section class="section" id="q2"><div class="wrap">
+      <div class="section-head"><div><div class="kicker">Questão 02 · Crédito</div><h2>Voting e Stacking</h2></div><p>Três modelos individuais foram combinados para classificar clientes como bons ou maus pagadores.</p></div>
+      <div class="cards"><div class="card"><span class="metric">92,1%</span><h3>Stacking · acurácia</h3><p>Melhor desempenho geral no teste.</p></div><div class="card"><span class="metric">89,3%</span><h3>Stacking · F1-Score</h3><p>Melhor equilíbrio entre Precision e Recall.</p></div><div class="card"><h3>Insight executivo</h3><p>O Stacking funciona como um gerente que aprende a combinar as recomendações dos especialistas.</p></div></div>
+      <div class="visual-grid" style="margin-top:28px"><figure><svg class="chart" viewBox="0 0 520 300" role="img" aria-label="Comparação visual de métricas dos cinco modelos"><rect width="520" height="300" fill="white"/><path d="M45 25V250H500" stroke="#8796aa"/><g fill="#4c78a8"><rect x="70" y="95" width="18" height="155"/><rect x="170" y="65" width="18" height="185"/><rect x="270" y="45" width="18" height="205"/><rect x="370" y="52" width="18" height="198"/><rect x="470" y="35" width="18" height="215"/></g><g fill="#f58518"><rect x="91" y="92" width="18" height="158"/><rect x="191" y="75" width="18" height="175"/><rect x="291" y="38" width="18" height="212"/><rect x="391" y="47" width="18" height="203"/></g><text x="80" y="275" fill="#26364d">RL</text><text x="180" y="275" fill="#26364d">Árvore</text><text x="280" y="275" fill="#26364d">SVM</text><text x="380" y="275" fill="#26364d">Voting</text><text x="470" y="275" fill="#26364d">Stacking</text></svg><figcaption>Métricas de classificação por modelo</figcaption></figure><figure><svg class="chart" viewBox="0 0 520 300" role="img" aria-label="Tabela visual destacando o Stacking"><rect width="520" height="300" fill="white"/><rect x="25" y="45" width="470" height="42" fill="#1f4e78"/><rect x="25" y="87" width="470" height="42" fill="#f3f6fa"/><rect x="25" y="129" width="470" height="42" fill="white"/><rect x="25" y="171" width="470" height="42" fill="#f3f6fa"/><rect x="25" y="213" width="470" height="42" fill="#d8f5ef"/><g fill="#26364d" font-size="15"><text x="40" y="72" fill="white">Modelo       Acurácia     F1</text><text x="40" y="114">Logística       82,9%     75,2%</text><text x="40" y="156">Árvore          87,1%     83,1%</text><text x="40" y="198">SVM             90,8%     87,2%</text><text x="40" y="240" font-weight="bold">Stacking        92,1%     89,3%</text></g></svg></figure></div>
+      <div class="table-wrap" style="margin-top:28px"><table><thead><tr><th>Modelo</th><th>Acurácia</th><th>Precision</th><th>Recall</th><th>F1-Score</th></tr></thead><tbody><tr><td>Regressão Logística</td><td>82,9%</td><td>83,8%</td><td>68,1%</td><td>75,2%</td></tr><tr><td>Árvore de Decisão</td><td>87,1%</td><td>82,6%</td><td>83,5%</td><td>83,1%</td></tr><tr><td>SVM</td><td>90,8%</td><td>92,6%</td><td>82,4%</td><td>87,2%</td></tr><tr><td>Voting</td><td>90,0%</td><td>90,4%</td><td>82,4%</td><td>86,2%</td></tr><tr class="highlight"><td>Stacking</td><td>92,1%</td><td>91,9%</td><td>86,8%</td><td>89,3%</td></tr></tbody></table></div>
+      <div class="explain"><div class="card"><div class="number">01</div><h3>Voting</h3><p>Cada especialista vota e vence a maioria. É simples, rápido e fácil de explicar.</p></div><div class="card"><div class="number">02</div><h3>Stacking</h3><p>Um metamodelo aprende como combinar as previsões dos especialistas.</p></div><div class="card"><div class="number">03</div><h3>Heterogeneidade</h3><p>Modelos diferentes enxergam padrões diferentes e podem cometer erros complementares.</p></div></div>
+    </div></section>
+
+    <section class="section" id="q3"><div class="wrap">
+      <div class="section-head"><div><div class="kicker">Questão 03 · AutoML</div><h2>TPOT e programação genética</h2></div><p>O TPOT explorou automaticamente combinações de pré-processamento, modelos e hiperparâmetros para diagnóstico binário.</p></div>
+      <div class="cards"><div class="card"><span class="metric">98,2%</span><h3>Baseline</h3><p>Regressão Logística simples.</p></div><div class="card"><span class="metric">93,9%</span><h3>TPOT</h3><p>Pipeline encontrado pela busca evolutiva.</p></div><div class="card"><h3>Pipeline selecionado</h3><p><strong>PolynomialFeatures</strong> → <strong>ExtraTreesClassifier</strong>, com 100 árvores e critério de entropia.</p></div></div>
+      <div class="visual-grid" style="margin-top:28px;margin-bottom:0"><figure><svg class="chart" viewBox="0 0 520 300" role="img" aria-label="Baseline 98,2 por cento e TPOT 93,9 por cento"><rect width="520" height="300" fill="white"/><path d="M70 25V245H470" stroke="#8796aa"/><rect x="145" y="35" width="90" height="210" fill="#4c78a8"/><rect x="300" y="50" width="90" height="195" fill="#f58518"/><text x="190" y="28" text-anchor="middle" font-weight="bold" fill="#26364d">98,2%</text><text x="345" y="43" text-anchor="middle" font-weight="bold" fill="#26364d">93,9%</text><text x="190" y="270" text-anchor="middle" fill="#26364d">Baseline</text><text x="345" y="270" text-anchor="middle" fill="#26364d">TPOT</text></svg></figure><figure><svg class="chart" viewBox="0 0 520 300" role="img" aria-label="Pipeline: dados, PolynomialFeatures, ExtraTreesClassifier e diagnóstico"><rect width="520" height="300" fill="white"/><g font-size="14" text-anchor="middle" fill="#26364d"><rect x="25" y="110" width="95" height="60" rx="10" fill="#d9eaf7"/><text x="72" y="145">Dados</text><rect x="145" y="110" width="105" height="60" rx="10" fill="#b6d7a8"/><text x="197" y="138">Polynomial</text><text x="197" y="156">Features</text><rect x="275" y="110" width="110" height="60" rx="10" fill="#f9cb9c"/><text x="330" y="138">ExtraTrees</text><text x="330" y="156">Classifier</text><rect x="410" y="110" width="85" height="60" rx="10" fill="#d9d2e9"/><text x="452" y="145">Saída</text></g><g stroke="#555" stroke-width="2" fill="none"><path d="M120 140h25M250 140h25M385 140h25" marker-end="url(#a)"/></g><defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="none" stroke="#555"/></marker></defs></svg></figure></div>
+      <div class="callout"><strong>Resposta:</strong> neste experimento, o TPOT não superou o Baseline. Isso reforça uma mensagem importante: AutoML acelera a busca, mas não substitui validação, conhecimento do problema e comparação com referências simples.</div>
+      <div class="explain"><div class="card"><div class="number">01</div><h3>AutoML</h3><p>Automatiza a exploração de pipelines e configurações.</p></div><div class="card"><div class="number">02</div><h3>Seleção natural</h3><p>As melhores soluções sobrevivem e geram novas combinações ao longo das gerações.</p></div><div class="card"><div class="number">03</div><h3>Uso responsável</h3><p>É preciso controlar custo, viés, sobreajuste e explicabilidade.</p></div></div>
+    </div></section>
+  </main>
+  <footer><div class="wrap">Projeto de Visualização e Apresentação Executiva · Resultados reproduzíveis com Python e Scikit-learn.</div></footer>
+</body>
+</html>
