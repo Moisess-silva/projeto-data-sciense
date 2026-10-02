@@ -1,159 +1,208 @@
+# Projeto de Ciência de Dados — PCA, LDA, Ensemble e AutoML
+
+Este projeto acadêmico reúne três experimentos de Ciência de Dados envolvendo técnicas de redução de dimensionalidade, métodos Ensemble e AutoML.
+
+O objetivo é aplicar, comparar e analisar diferentes técnicas de aprendizado de máquina em problemas de classificação, observando seus resultados, vantagens e limitações.
+
+## Tecnologias utilizadas
+
+- Python
+- NumPy
+- Pandas
+- Scikit-learn
+- Matplotlib
+- Seaborn
+- TPOT
+
+## Conteúdo do projeto
+
+O trabalho está dividido em três partes:
+
+1. **PCA e LDA:** comparação de técnicas de redução de dimensionalidade aplicadas à classificação de vinhos.
+2. **Voting e Stacking:** comparação de métodos Ensemble em um problema de classificação de crédito.
+3. **AutoML com TPOT:** utilização de programação genética para busca automática de pipelines e hiperparâmetros.
+
+---
+
 # Questão 1 — Classificação de vinhos com LDA e PCA
 
-Projeto acadêmico de visualização e apresentação executiva. O objetivo é comparar PCA e LDA como técnicas de redução de dimensionalidade antes de um classificador KNN (`k=5`) para os três tipos de vinho do dataset `load_wine`.
+O objetivo desta etapa é comparar PCA e LDA como técnicas de redução de dimensionalidade antes da aplicação de um classificador KNN (`k=5`) aos três tipos de vinho do dataset `load_wine`.
 
-## Parte A — preparação do ambiente
+## Análise dos métodos
 
-### Ferramentas e bibliotecas
+### Padronização
 
-No terminal, dentro da pasta do projeto, execute:
+Cada característica química é colocada em uma escala comparável. Isso evita que uma variável com valores numericamente maiores exerça influência desproporcional sobre as demais.
 
-```bash
-python -m venv .venv
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
+### PCA
 
-Em linguagem simples:
+O PCA (Principal Component Analysis) procura direções que preservem a maior quantidade possível da variação total dos dados.
 
-- **Python**: linguagem usada para executar a análise.
-- **NumPy**: operações numéricas e matrizes.
-- **Pandas**: organização e leitura de dados tabulares.
-- **Scikit-learn**: dataset, padronização, PCA, LDA, KNN e métricas.
-- **Matplotlib**: criação e salvamento dos gráficos.
-- **Seaborn**: acabamento visual e cores dos gráficos.
+É uma técnica não supervisionada, ou seja, não utiliza os rótulos das classes durante a redução de dimensionalidade.
 
-### Estrutura recomendada
+### LDA
 
-```text
-Entrega-Data-Sciense/
-├── README.md
-├── requirements.txt
-├── src/
-│   └── questao_1_vinhos.py
-├── assets/
-│   ├── q1_pca_scatter.png
-│   ├── q1_lda_scatter.png
-│   └── q1_accuracy_comparison.png
-└── .gitignore
-```
+O LDA (Linear Discriminant Analysis) procura uma projeção que deixe as classes conhecidas o mais separadas possível e, ao mesmo tempo, mantenha próximos os elementos pertencentes à mesma classe.
 
-A pasta `assets/` concentra as imagens prontas para inserir nos slides.
+Diferentemente do PCA, o LDA utiliza os rótulos das classes durante o processo.
 
-## Execução
+## Resultados
 
-```bash
-python src/questao_1_vinhos.py
-```
+Após a execução do experimento, o LDA obteve **94,4% de acurácia**, enquanto o PCA obteve **91,7%**.
 
-O script cria ou atualiza automaticamente os três arquivos PNG em `assets/` e imprime as acurácias no terminal.
+Neste cenário, portanto, o LDA apresentou maior acurácia.
 
-## Parte C — roteiro executivo para os slides
+## Discussão
 
-### 1. Intuição das técnicas
+O LDA tende a ser adequado para problemas de classificação supervisionada porque utiliza os rótulos durante a redução de dimensionalidade, buscando aumentar a distância entre as classes e reduzir a dispersão dentro de cada uma delas.
 
-**Padronização:** cada característica química é colocada em uma escala comparável. É como converter todas as medidas para uma régua comum: uma variável com números muito grandes não domina artificialmente outra com números menores.
+O PCA pode apresentar bons resultados quando a informação relevante para classificação está presente nas direções de maior variância dos dados. Também é útil quando se deseja uma representação exploratória independente das classes.
 
-**PCA:** procura as direções que preservam a maior quantidade possível da variação total dos dados. A analogia é fotografar uma nuvem de pontos de um ângulo que mostre melhor seu formato. O PCA não recebe as respostas das classes; ele observa apenas a estrutura dos dados.
+Além disso, o LDA possui uma limitação relacionada ao número de classes, já que pode gerar no máximo `n_classes - 1` componentes discriminantes.
 
-**LDA:** procura uma projeção que deixe as classes conhecidas o mais separadas possível e, ao mesmo tempo, mantenha os pontos da mesma classe próximos. É como ajustar a iluminação e o ângulo de uma fotografia sabendo quais pessoas pertencem a cada grupo, para que os grupos fiquem mais fáceis de distinguir.
+## Conclusão
 
-### 2. Qual método proporcionou melhor acurácia?
+Após a padronização das variáveis, PCA e LDA foram utilizados para reduzir a dimensionalidade dos dados antes da classificação com KNN.
 
-Após a execução do experimento, o LDA obteve **94,4%** de acurácia, enquanto o PCA obteve **91,7%**. Portanto, neste cenário, o melhor método foi o **LDA**.
+O PCA preserva a variação geral dos dados, enquanto o LDA utiliza os rótulos das classes para buscar uma representação que favoreça sua separação.
 
-Essa forma de reportar evita apresentar um número sem executar exatamente o experimento definido no trabalho.
+Neste experimento, o LDA apresentou maior acurácia no conjunto de teste, embora esse resultado seja específico às condições e ao conjunto de dados utilizados.
 
-### 3. Por que o LDA tende a ser mais adequado? Quando o PCA pode superar?
+---
 
-O LDA tende a ser mais adequado para classificação supervisionada porque usa os rótulos durante a redução: ele busca diretamente aumentar a distância entre classes e reduzir a dispersão dentro de cada classe. Assim, a representação já nasce orientada para separar os grupos.
+# Questão 2 — Stacking e Voting para classificação de crédito
 
-O PCA pode superar o LDA quando a maior parte da informação útil para classificar está em direções de alta variância, quando os rótulos são pouco confiáveis, quando há muito ruído ou quando se deseja uma representação exploratória independente das classes. Também pode ser mais conveniente quando existem muitas classes, pois o LDA possui limite de no máximo `n_classes - 1` componentes discriminantes.
+Nesta etapa são comparadas diferentes estratégias de Ensemble aplicadas a um problema de classificação de crédito.
 
-### Mensagem final sugerida
+São utilizados modelos individuais e duas técnicas de combinação: Voting e Stacking.
 
-> “Depois de colocar todas as variáveis na mesma escala, comparamos duas formas de resumir os dados. O PCA preserva a variação geral, enquanto o LDA usa os grupos conhecidos para maximizar a separação entre classes. No experimento, o método com maior acurácia no teste foi o indicado no gráfico comparativo; isso mostra qual representação foi mais útil para o KNN neste conjunto de dados, sem afirmar que será sempre superior em outros cenários.”
+## Métodos utilizados
 
-## Questão 2 — Stacking e Voting para classificação de crédito
+### Voting Classifier
 
-### Execução
+O Voting Classifier combina as decisões de diferentes modelos.
 
-```bash
-python src/questao_2_credito.py
-```
+No Hard Voting, cada modelo realiza uma previsão e a classe que recebe a maioria dos votos é escolhida como resultado final.
 
-O script gera um dataset sintético reproduzível com variáveis numéricas e categóricas, aplica normalização e one-hot encoding, treina os três modelos individuais, Voting por maioria e Stacking com regressão logística como metamodelo. Os resultados são salvos em `assets/q2_metrics_comparison.png` e `assets/q2_performance_table.png`.
+Essa abordagem permite combinar modelos diferentes de maneira relativamente simples.
 
-### Roteiro executivo
+### Stacking Classifier
 
-**Voting Classifier:** imagine três analistas de crédito independentes. Cada um avalia o cliente e vota “bom pagador” ou “mau pagador”. O banco escolhe a decisão que recebeu mais votos. No *Hard Voting*, todos os modelos têm o mesmo peso na decisão final.
+O Stacking utiliza diversos modelos-base e adiciona um metamodelo responsável por aprender como combinar suas previsões.
 
-**Stacking Classifier:** agora, além dos três analistas, existe um gerente. O gerente observa as recomendações dos analistas em vários casos e aprende em quais situações deve confiar mais em cada um. Ele então combina essas recomendações para produzir a decisão final.
+Nesse experimento, a regressão logística é utilizada como metamodelo.
 
-**Pergunta 1 — O Stacking superou os modelos individuais e o Voting?**
+## Resultados
 
-Consulte a tabela `q2_performance_table.png`, especialmente a coluna F1-Score, que equilibra Precision e Recall. Neste experimento, o **Stacking superou os três modelos individuais e o Voting**, com F1-Score de **89,3%** e acurácia de **92,1%**. O melhor modelo individual foi o SVM, com F1-Score de 87,2%; o Voting alcançou 86,2%. O resultado não deve ser generalizado para qualquer carteira de crédito: ele depende da amostra, do pré-processamento e dos hiperparâmetros escolhidos.
+A comparação dos modelos considera especialmente o **F1-Score**, métrica que equilibra Precision e Recall.
 
-**Pergunta 2 — Quando o Voting é preferível ao Stacking?**
+Neste experimento, o **Stacking superou os três modelos individuais e o Voting**, apresentando:
 
-O Voting é preferível quando se busca simplicidade, transparência, menor custo computacional e menor risco de sobreajuste. Ele é especialmente útil quando os modelos já são razoavelmente bons e suas decisões são complementares, mas não há dados suficientes para treinar com segurança um metamodelo. Também é mais fácil de explicar para áreas de negócio: a decisão veio da maioria.
+- **F1-Score: 89,3%**
+- **Acurácia: 92,1%**
 
-**Pergunta 3 — Estimadores fracos homogêneos e heterogêneos**
+O melhor modelo individual foi o SVM, com **F1-Score de 87,2%**, enquanto o Voting alcançou **86,2%**.
 
-Estimadores fracos **homogêneos** usam a mesma família de algoritmo, como várias árvores rasas. Eles podem reduzir erros por meio da diversidade de amostras ou configurações, mas tendem a cometer erros parecidos. Estimadores **heterogêneos** usam famílias diferentes, como regressão logística, árvore e SVM. Como enxergam os dados de formas distintas, podem produzir erros complementares; por isso, são particularmente interessantes para Voting e Stacking.
+Esses resultados dependem da amostra utilizada, do pré-processamento dos dados e dos hiperparâmetros escolhidos.
 
-### Mensagem final sugerida
+## Discussão: Voting e Stacking
 
-> “O ensemble combina perspectivas diferentes para tornar a decisão de crédito mais robusta. No Voting, a decisão é democrática e simples de auditar. No Stacking, um metamodelo aprende como combinar as recomendações, podendo capturar relações mais sofisticadas, ao custo de maior complexidade e necessidade de validação cuidadosa.”
+O Voting pode ser uma alternativa interessante quando se busca simplicidade, transparência e menor custo computacional.
 
-## Questão 3 — AutoML com TPOT
+Ele também pode ser utilizado quando os modelos individuais apresentam resultados satisfatórios e possuem comportamentos complementares.
 
-### Execução
+O Stacking, por outro lado, adiciona um metamodelo capaz de aprender como combinar as previsões dos modelos-base. Isso pode permitir relações mais sofisticadas, mas aumenta a complexidade do processo.
 
-```bash
-python src/questao_3_tpot.py
-```
+## Estimadores homogêneos e heterogêneos
 
-O script usa o dataset `load_breast_cancer`, separa os dados em treino e teste, executa o TPOT com 5 gerações, população de 20 indivíduos e validação cruzada de 5 partes, exporta o pipeline vencedor para `outputs/q3_tpot_best_pipeline.py` e salva os dois visuais em `assets/`.
+Estimadores fracos **homogêneos** utilizam a mesma família de algoritmo, como várias árvores de decisão.
 
-### Roteiro executivo
+Já os estimadores **heterogêneos** utilizam diferentes famílias de algoritmos, como regressão logística, árvore de decisão e SVM.
 
-**AutoML:** é como contratar um assistente especializado para testar muitas combinações de preparação de dados, modelos e configurações. Em vez de escolher manualmente cada alternativa, o AutoML explora o espaço de possibilidades e apresenta uma solução competitiva.
+A utilização de modelos heterogêneos pode ser interessante em métodos como Voting e Stacking porque diferentes algoritmos podem analisar os dados de maneiras distintas e produzir erros complementares.
 
-**Programação Genética:** a analogia é a evolução das espécies. Cada solução candidata é um “indivíduo”; uma população inicial contém diferentes pipelines. Os melhores indivíduos, medidos pela validação cruzada, são selecionados para gerar novas combinações. Depois de várias gerações, sobrevivem as configurações com melhor desempenho.
+## Conclusão
 
-**Pergunta 1 — Qual pipeline o TPOT selecionou? Ele superou o Baseline?**
+Os métodos Ensemble permitem combinar diferentes modelos com o objetivo de tornar a classificação mais robusta.
 
-O TPOT selecionou **PolynomialFeatures** seguido de **ExtraTreesClassifier**, com critério de entropia, `max_features=0.8`, `min_samples_leaf=19`, `min_samples_split=5` e 100 árvores. O TPOT obteve **93,9%** de acurácia, enquanto o Baseline obteve **98,2%**. Portanto, **o TPOT não superou o Baseline neste experimento**. Isso não significa que o AutoML falhou: o resultado mostra que a busca, sob essas configurações e nesse split, não encontrou uma solução melhor que a referência simples.
+No Voting, a decisão final é obtida pela combinação direta dos votos dos estimadores.
 
-**Pergunta 2 — Vantagens e desvantagens do AutoML**
+No Stacking, um metamodelo aprende a combinar as previsões dos modelos-base.
 
-No mercado, o AutoML acelera protótipos, amplia a produtividade de equipes e ajuda a encontrar combinações que poderiam passar despercebidas. Na academia, facilita comparações sistemáticas e torna a busca mais reprodutível quando sementes e configurações são documentadas.
+Neste experimento, o Stacking apresentou o maior F1-Score entre as abordagens avaliadas, embora exija maior complexidade e validação cuidadosa.
 
-As desvantagens são custo computacional, maior dificuldade de explicar algumas escolhas, risco de sobreajuste ao processo de busca e dependência da qualidade dos dados. O AutoML não substitui a definição correta do problema, a análise de vieses, a validação externa nem a responsabilidade humana sobre a decisão.
+---
 
-**Pergunta 3 — Relação com hiperparâmetros e otimização**
+# Questão 3 — AutoML com TPOT
 
-Na busca de hiperparâmetros, a programação genética pode representar cada pipeline como uma estrutura com blocos e configurações: normalização, seleção de variáveis, modelo e parâmetros. A evolução altera esses blocos por mutação e recombinação, avalia cada candidato por uma métrica e mantém os mais promissores. Assim, ela otimiza simultaneamente a arquitetura do pipeline e seus hiperparâmetros, em vez de ajustar apenas um modelo isolado.
+A terceira etapa do projeto utiliza AutoML por meio da biblioteca TPOT.
 
-## Publicação no GitHub Pages
+O experimento utiliza o dataset `load_breast_cancer` e aplica programação genética para explorar diferentes pipelines e configurações de modelos.
 
-Site interativo: **https://SEU-USUARIO.github.io/SEU-REPOSITORIO/**
+## AutoML
 
-Substitua o endereço acima pelo link real após ativar o GitHub Pages. O `index.html` usa gráficos SVG inline e não depende dos arquivos PNG para funcionar no navegador.
+AutoML (Automated Machine Learning) busca automatizar diferentes etapas relacionadas à criação e otimização de modelos de aprendizado de máquina.
 
-### Clonar e executar
+Em vez de testar manualmente todas as combinações possíveis, ferramentas de AutoML podem explorar automaticamente diferentes modelos, transformações e hiperparâmetros.
 
-```bash
-git clone https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
-cd SEU-REPOSITORIO
-python -m venv .venv
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python main.py
-```
+## Programação genética
 
-O comando executa as três questões, atualiza os gráficos em `assets/` e exporta o pipeline TPOT em `outputs/`.
+A programação genética utiliza conceitos inspirados no processo de evolução.
+
+Cada solução candidata pode ser considerada um indivíduo dentro de uma população de pipelines.
+
+As soluções são avaliadas e as mais promissoras são utilizadas para gerar novas combinações por meio de operações como mutação e recombinação.
+
+Esse processo ocorre durante várias gerações.
+
+## Resultados
+
+O TPOT selecionou um pipeline composto por **PolynomialFeatures** seguido de **ExtraTreesClassifier**.
+
+O pipeline utilizou:
+
+- critério de entropia;
+- `max_features = 0.8`;
+- `min_samples_leaf = 19`;
+- `min_samples_split = 5`;
+- 100 árvores.
+
+O TPOT obteve **93,9% de acurácia**, enquanto o modelo utilizado como baseline obteve **98,2%**.
+
+Portanto, nas condições utilizadas neste experimento, o TPOT não superou o baseline.
+
+Isso não significa que o AutoML tenha falhado. O resultado indica que, dentro das configurações e do espaço de busca utilizados, não foi encontrada uma solução superior à referência adotada.
+
+## Vantagens e limitações do AutoML
+
+O AutoML pode acelerar a criação de protótipos, aumentar a produtividade e auxiliar na descoberta de combinações de modelos e configurações.
+
+No ambiente acadêmico, também pode facilitar comparações sistemáticas entre diferentes soluções.
+
+Entre suas limitações estão:
+
+- custo computacional;
+- maior dificuldade de interpretação de determinadas escolhas;
+- possibilidade de sobreajuste durante o processo de busca;
+- dependência da qualidade dos dados;
+- necessidade de validação adequada dos resultados.
+
+O AutoML não substitui a definição correta do problema, a análise dos dados ou a avaliação humana dos resultados.
+
+## Programação genética e otimização de hiperparâmetros
+
+Na busca por hiperparâmetros, a programação genética pode representar cada pipeline como uma combinação de diferentes etapas e configurações.
+
+Essas combinações podem incluir normalização, seleção de variáveis, escolha do modelo e seus respectivos parâmetros.
+
+Durante a evolução, essas estruturas são modificadas e avaliadas de acordo com uma determinada métrica.
+
+Dessa forma, a programação genética permite otimizar tanto a estrutura do pipeline quanto seus hiperparâmetros.
+
+## Conclusão
+
+O experimento com TPOT demonstrou como uma ferramenta de AutoML pode automatizar a busca por pipelines e hiperparâmetros.
+
+Nas configurações utilizadas, o pipeline selecionado pelo TPOT alcançou **93,9% de acurácia**, enquanto o baseline obteve **98,2%**.
+
+O resultado reforça que AutoML deve ser tratado como uma ferramenta de apoio à experimentação e otimização, e não como garantia de desempenho superior a modelos definidos manualmente.
